@@ -12,27 +12,27 @@ AL = 0
 def iniciar_valor(nombre, alias ):
     while True:
         try: 
-            CB = int(input("{nombre}({alias}): "))
-            break
+            valor = float(input(f"{nombre}({alias}): "))
+            return valor
         except ValueError:
-            print("\nError: Solo se permiten numeros enteros.\n")
+            print("\nError: Ingrese un valor numérico válido.\n")
 
-iniciar_valor("Cantidad de baños", "CB")
-iniciar_valor("Dias para proximo mantenimiento", "D")
-iniciar_valor("Aceptacion de licitacion", "AL")
+CB = iniciar_valor("Cantidad de baños", "CB")
+D = iniciar_valor("Dias para proximo mantenimiento", "D")
+AL = iniciar_valor("Aceptacion de licitacion", "AL")
 
 
 # Condiciones Iniciales
 BD = CB
 T = 0
 CMI = 0
-TPM = D
+D_segundos = D * 24 * 60 * 60
+TPM = D_segundos
 TPP = 0
 SCM = 0
 SB = 0
 CE = 50000
-D = 0
-
+CSB = 0
 BN = 0
 
 # 1 MES
@@ -41,7 +41,7 @@ TF = 60 * 60 * 24 * 30
 HV = 9999999
 
 
-def TPP():
+def proximo_pedido():
     global T
     global TPP
     global CSB
@@ -51,7 +51,7 @@ def TPP():
 
     T = TPP
     TPP = T + obtener_IE()
-    CSB = (obtener_PA * 2)/50
+    CSB = (obtener_PA() * 2)/50
     if(CSB <= BD):
         if(obtener_AL()):
             BD = BD - CSB
@@ -59,7 +59,7 @@ def TPP():
 
     
 
-def TPM():
+def proximo_mantenimiento():
     global T
     global TPM
     global D
@@ -69,13 +69,13 @@ def TPM():
     global SCM
 
     T = TPM
-    TPM = T + D
+    TPM = T + D_segundos
     CMI = CMI - BD
     BD = CB
     SCM = SCM + CB * 15000
 
 def obtener_IE():
-    R = random.betavariate(0,1)
+    R = random.uniform(0,1)
     a = -0.0001
     valor = (np.log(-R + 1))/(a)
     return valor
@@ -90,6 +90,8 @@ def obtener_PA():
 
 
 def obtener_AL():
+    global AL
+
     R = random.uniform(0,1)
     if(R <= AL):
         return True
@@ -122,10 +124,10 @@ def realizar_simulacion():
     global TF
 
     while True: 
-        if TPP <= TPM:
-            TPM()
+        if TPM <= TPP:
+            proximo_mantenimiento()
         else: 
-            TPP()
+            proximo_pedido()
         
         if T < TF:
             continue
