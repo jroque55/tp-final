@@ -35,8 +35,8 @@ CE = 50000
 CSB = 0
 BN = 0
 
-# 1 MES
-TF = 60 * 60 * 24 * 30
+# 1 año
+TF = 60 * 60 * 24 * 365
 
 HV = 9999999
 
@@ -51,7 +51,7 @@ def proximo_pedido():
 
     T = TPP
     TPP = T + obtener_IE()
-    CSB = (obtener_PA() * 2)/50
+    CSB = int(obtener_PA() * 2)/50
     if(CSB <= BD):
         if(obtener_AL()):
             BD = BD - CSB
@@ -70,7 +70,7 @@ def proximo_mantenimiento():
 
     T = TPM
     TPM = T + D_segundos
-    CMI = CMI - BD
+    CMI = CMI + BD
     BD = CB
     SCM = SCM + CB * 15000
 
@@ -110,7 +110,7 @@ def resultados():
     BN = SB - SCM
 
     print(f"Beneficio Neto: {BN}")
-    print(f"Costo Mantenimiento Innecesario: {CMI}")
+    print(f"Cantidad de Mantenimientos Innecesarios: {CMI}")
     print(f"Dias para proximo mantenimiento: {D}")
     print(f"Cantidad de baños: {CB}")
     print(f"Aceptacion de licitacion: {AL}")
